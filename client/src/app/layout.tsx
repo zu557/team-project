@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Tinos } from "next/font/google";
 import "./globals.css";
 import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 const tinos = Tinos({ subsets: ["latin"], weight: ["400", "700"] });
 
@@ -20,6 +21,7 @@ export default function RootLayout({
       <body className={tinos.className}>
         <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );
