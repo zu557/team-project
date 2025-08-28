@@ -53,7 +53,7 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="space-y-16 ">
+    <div className="space-y-16 bg-sidebar-border ">
       <div
         className="h-92 relative  flex  flex-col justify-center items-center "
         style={{
@@ -88,7 +88,7 @@ export default function AboutPage() {
             Our Journey
           </h2>
 
-          <div className="space-y-20 relative">
+          <div className="  relative">
             <div className="absolute left-1/2 top-0 h-full w-1 bg-primary/30 transform -translate-x-1/2" />
             <div className="absolute top-8 left-1/2 w-6 h-6 bg-primary rounded-full border-4 border-background transform -translate-x-1/2 shadow-md" />
             {timeline.map((item, i) => (

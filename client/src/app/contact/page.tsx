@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -60,7 +60,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="w-full min-h-screen">
+    <div className="w-full min-h-screen bg-sidebar-border">
       {/* Hero */}
       <section
         className="relative h-[60vh] flex items-center justify-center text-primary-foreground overflow-hidden"
@@ -149,8 +149,8 @@ export default function ContactPage() {
             ))}
           </motion.div>
         </section>
-        <div className="px-4 max-w-6xl mx-auto flex flex-col lg:flex-row gap-5 py-10">
-          <div className="flex-1 space-y-5 border px-4 py-10">
+        <div className="px-4 max-w-6xl mx-auto flex flex-col lg:flex-row gap-5 py-10 ">
+          <div className="flex-1 space-y-5 border px-4 py-10 bg-background">
             <h1 className="text-center text-muted-foreground text-xl font-medium">
               Send us message
             </h1>

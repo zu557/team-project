@@ -54,7 +54,7 @@ export default function ServicePage() {
   ];
 
   return (
-    <div className=" space-y-5 ">
+    <div className=" space-y-5 bg-sidebar-border ">
       <div
         className="h-72 relative  flex  flex-col justify-center items-center "
         style={{
