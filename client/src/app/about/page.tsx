@@ -117,7 +117,27 @@ export default function AboutPage() {
             ))}
           </div>
         </div>
-        <div className=" px-4">
+        <div
+          className=" bg-background py-6
+          px-4"
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="space-y-4"
+          >
+            {" "}
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-medium text-center">
+              Our Mission and Values
+            </h1>
+            <p className="text-muted-foreground max-w-3xl mx-auto mb-10 text-center">
+              At Debbal, our mission is to harness technology to drive
+              innovation, foster trust, and create solutions that empower
+              businesses and communities worldwide.
+            </p>
+          </motion.div>
           <motion.div
             initial="hidden"
             whileInView="visible"

@@ -25,12 +25,12 @@ export default function NavbarMenu() {
             <span className="text-primary text-xl font-bold">Debbal</span>
           </SheetTitle>
         </SheetHeader>
-        <ul className="flex flex-col gap-6 mt-6 px-3 w-full">
+        <ul className="flex flex-col gap-6 px-3 w-full">
           {[
             { href: "/", label: "Home" },
-            { href: "/about", label: "About" },
             { href: "/service", label: "Service" },
             { href: "/portfolio", label: "Portfolio" },
+            { href: "/about", label: "About" },
             { href: "/contact", label: "Contact" },
           ].map((item) => (
             <li key={item.href}>

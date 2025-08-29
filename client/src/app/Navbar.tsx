@@ -6,17 +6,17 @@ export default function Navbar() {
   return (
     <div className="sticky top-0 px-6 py-4 flex items-center justify-between shadow bg-white z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between w-full">
-        <div className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <Image src="/logo.png" alt="Logo" width={40} height={40} />
           <span className="text-primary text-xl font-bold">Debbal</span>
-        </div>
+        </Link>
 
         <ul className=" items-center gap-8 hidden md:flex">
           {[
             { href: "/", label: "Home" },
-            { href: "/about", label: "About" },
             { href: "/service", label: "Service" },
             { href: "/portfolio", label: "Portfolio" },
+            { href: "/about", label: "About" },
             { href: "/contact", label: "Contact" },
           ].map((item) => (
             <li key={item.href}>
