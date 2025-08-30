@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -37,6 +37,7 @@ export default function ContactPage() {
     register,
     handleSubmit,
     formState: { errors },
+    control,
     reset,
   } = useForm<FormValues>();
 
@@ -61,7 +62,6 @@ export default function ContactPage() {
 
   return (
     <div className="w-full min-h-screen bg-sidebar-border">
-      {/* Hero */}
       <section
         className="relative h-[60vh] flex items-center justify-center text-primary-foreground overflow-hidden"
         style={{
@@ -194,18 +194,34 @@ export default function ContactPage() {
 
               <div className="space-y-2">
                 <Label>Subject</Label>
-                <Select {...register("subject")}>
-                  <SelectTrigger className="w-full max-w-[200px] rounded-none">
-                    <SelectValue placeholder="Select subject" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="general">General</SelectItem>
-                      <SelectItem value="partnership">Partnership</SelectItem>
-                      <SelectItem value="newProject">New Project</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                <Controller
+                  name="subject"
+                  control={control}
+                  rules={{ required: "This field is required" }}
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger className="w-full max-w-[200px] rounded-none">
+                        <SelectValue placeholder="Select subject" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="general">General</SelectItem>
+                          <SelectItem value="partnership">
+                            Partnership
+                          </SelectItem>
+                          <SelectItem value="newProject">
+                            New Project
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.subject && (
+                  <p className="text-destructive text-sm">
+                    {errors.subject.message}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">

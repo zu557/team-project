@@ -11,7 +11,7 @@ import {
   GraduationCap,
   Layers,
 } from "lucide-react";
-import Testimonials from "@/components/ClientTestimonny";
+import ClientTestimony from "@/components/ClientTestimony";
 
 export default function ServicePage() {
   const services = [
@@ -128,7 +128,7 @@ export default function ServicePage() {
             Get in Touch
           </Button>
         </motion.div>
-        <Testimonials />
+        <ClientTestimony />
       </div>
     </div>
   );
