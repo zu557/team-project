@@ -16,7 +16,7 @@ app.use(morgan("dev"));
 
 app.use("/api/v1/projects", projecRouter);
 app.use("/api/v1/blogs", blogRouter);
-app.use("api/v1/contact", emailRouter);
+app.use("/api/v1/contact", emailRouter);
 
 app.all("/{*any}", (req, res, next) => {
   res.status(404).json({

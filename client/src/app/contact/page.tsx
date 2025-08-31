@@ -23,6 +23,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useSendEmail } from "@/api/useSendEmail";
+import Spinner from "@/components/SpinnerMini";
 
 type FormValues = {
   name: string;
@@ -40,14 +42,12 @@ export default function ContactPage() {
     control,
     reset,
   } = useForm<FormValues>();
-
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const { mutate, isPending } = useSendEmail();
 
   function onSubmit(values: FormValues) {
-    console.log("✅ Submitted:", values);
-    setIsSubmitted(true);
-    reset();
-    setTimeout(() => setIsSubmitted(false), 5000);
+    mutate(values, {
+      onSuccess: () => reset(),
+    });
   }
 
   const fadeIn = {
@@ -205,11 +205,11 @@ export default function ContactPage() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="general">General</SelectItem>
-                          <SelectItem value="partnership">
+                          <SelectItem value="General">General</SelectItem>
+                          <SelectItem value="Partnership">
                             Partnership
                           </SelectItem>
-                          <SelectItem value="newProject">
+                          <SelectItem value="NewProject">
                             New Project
                           </SelectItem>
                         </SelectGroup>
@@ -238,14 +238,8 @@ export default function ContactPage() {
               </div>
 
               <Button type="submit" className="w-full rounded-none">
-                Send Message
+                {isPending ? <Spinner /> : "Send Message"}
               </Button>
-
-              {isSubmitted && (
-                <p className="text-green-500 text-center mt-2">
-                  Message sent successfully!
-                </p>
-              )}
             </form>
           </div>
 

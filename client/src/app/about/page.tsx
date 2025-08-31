@@ -118,7 +118,7 @@ export default function AboutPage() {
           </div>
         </div>
         <div
-          className=" bg-background py-6
+          className="  py-6
           px-4"
         >
           <motion.div
