@@ -1,20 +1,17 @@
-// import { Router } from "express";
-// import { 
-//   getProjects, 
-//   getProject, 
-//   addProject, 
-//   updateProject, 
-//   deleteProject 
-// } from "" // 👉 update with your actual controller file
+import { Router } from "express";
+import { 
+  getProjects, getProjectById, addProject, updateProject, deleteProject 
+} from  "../controllers/project-controllers.js"; 
 
-// const router: Router = Router();
+const router: Router = Router();
 
-// // Public routes
-// router.get("/projects", getProjects);
-// router.get("/projects/:id", getProject);
+// Public routes
+router.get("/", getProjects);
+router.get("/:id", getProjectById);
 
-// // Admin-only routes
-// router.post("/projects", addProject);
-// router.delete("/projects/:id", deleteProject);
+// Admin-only routes
+router.post("/", addProject);
+router.patch("/:id",updateProject)
+router.delete("/:id", deleteProject);
 
-// export default router;
+export default router;

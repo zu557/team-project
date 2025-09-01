@@ -8,16 +8,17 @@ const blogPostSchema = new Schema(
     author: { type: String, required: true },
     categories: { type: String },
     featuredImage: { type: String },
+    publicId:{type: String , required :true}
   },
   { timestamps: true }
 );
 
 // Infer the TypeScript type directly from the schema
-type IBlogPost = mongoose.InferSchemaType<typeof blogPostSchema>;
+export type IBlogPost = mongoose.InferSchemaType<typeof blogPostSchema>;
 
 // Create the model
 const BlogPost: Model<IBlogPost> = mongoose.model<IBlogPost>(
-  "BlogPost",
+  "Blog",
   blogPostSchema
 );
 
