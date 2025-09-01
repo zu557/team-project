@@ -24,7 +24,7 @@ export default function ReadyToContact() {
           size="lg"
           className="rounded-xl shadow-lg hover:scale-105 transition-transform duration-300"
         >
-          <Link href="/contect">Get in Touch</Link>
+          <Link href="/contact">Get in Touch</Link>
         </Button>
       </motion.div>
     </div>
