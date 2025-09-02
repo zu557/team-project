@@ -118,7 +118,7 @@ export default function AboutPage() {
           </div>
         </div>
         <div
-          className=" bg-background py-6
+          className="  py-6
           px-4"
         >
           <motion.div
@@ -151,7 +151,7 @@ export default function AboutPage() {
                 initial={{ opacity: 0, y: 40, scale: 0.95 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.8, delay: 0.3 * index }}
+                transition={{ duration: 0.4, delay: 0.3 * index }}
               >
                 <Card className="px-12 py-4 rounded-none">
                   <CardTitle className="flex items-center gap-3">

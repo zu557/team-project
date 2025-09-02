@@ -15,8 +15,9 @@ export default function Navbar() {
           {[
             { href: "/", label: "Home" },
             { href: "/service", label: "Service" },
-            { href: "/portfolio", label: "Portfolio" },
+            { href: "/projects", label: "Portfolio" },
             { href: "/about", label: "About" },
+            { href: "/blogs", label: "Blogs" },
             { href: "/contact", label: "Contact" },
           ].map((item) => (
             <li key={item.href}>

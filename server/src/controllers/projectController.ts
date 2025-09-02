@@ -1,12 +1,15 @@
 import Project from "../models/projects.js";
-import { AppError } from "../utils/AppEror.js";
 import { catchAsync } from "../utils/catchAsync.js";
 
 export const getProjects = catchAsync(async (req, res, next) => {
-  const data = await Project.find();
-  if (!data || data.length === 0) {
-    return next(new AppError("No projects available at the moment", 404));
+  const { category } = req.query;
+
+  let query: Record<string, string> = {};
+  if (category && category !== "all") {
+    query.category = category.toString();
   }
+
+  const data = await Project.find(query);
 
   res.status(200).json({
     status: "success",
