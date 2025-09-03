@@ -1,16 +1,16 @@
-import { Router } from 'express'
-import { getBlogs, getBlogById, addBlog, updateBlog, deleteBlog } from '../controllers/blog-conrollers.js'
- 
-const router: Router = Router()
+import { Router } from 'express';
+import { getBlogs, getBlogById, addBlog, updateBlog, deleteBlog } from '../controllers/blog-conrollers.js';
+import upload from "../middleware/upload-middleware.js";
 
-router.get('/blog-post', getBlogs)
+const router: Router = Router();
 
-router.get('/blog-post/:id', getBlogById)
+// Public
+router.get('/', getBlogs);
+router.get('/:id', getBlogById);
 
-router.post('/blog-post', addBlog)// only for admin
+// Admin
+router.post('/', upload.single("image"), addBlog);
+router.put('/:id', updateBlog);
+router.delete('/:id', deleteBlog);
 
-router.put('/blog-post/:id', updateBlog)// only for admin
-
-router.delete('/delete-blog-post/:id', deleteBlog)// only for admin
-
-export default router
+export default router;

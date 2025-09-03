@@ -6,6 +6,7 @@ const projectSchema = new Schema(
     description: { type: String, required: true },
     category: { type: String },
     imageUrl: { type: String },
+    publicId: {type: String},
   },
   { timestamps: true }
 );

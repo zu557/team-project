@@ -7,7 +7,7 @@ const blogPostSchema = new Schema(
     content: { type: String, required: true },
     author: { type: String, required: true },
     categories: { type: String },
-    featuredImage: { type: String },
+    imageUrl: { type: String },
     publicId:{type: String , required :true}
   },
   { timestamps: true }
