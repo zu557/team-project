@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getBlogs, getBlogById, addBlog, updateBlog, deleteBlog } from '../controllers/blog-conrollers.js';
+import { getBlogs, getBlogById, addBlog, updateBlog, deleteBlog } from '../controllers/blog-controllers.js';
 import upload from "../middleware/upload-middleware.js";
 
 const router: Router = Router();
