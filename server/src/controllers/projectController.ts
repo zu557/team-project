@@ -5,7 +5,7 @@ export const getProjects = catchAsync(async (req, res, next) => {
   const { category } = req.query;
 
   let query: Record<string, string> = {};
-  if (category && category !== "all") {
+  if (category && category !== "All") {
     query.category = category.toString();
   }
 

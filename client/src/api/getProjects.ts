@@ -2,7 +2,7 @@ import { ProjectType } from "@/components/ProjectList";
 import { Api } from "@/utils/Api";
 import { toast } from "sonner";
 
-export default async function getProjects(category: string) {
+export default async function getProjects(category?: string) {
   try {
     const response = await fetch(`${Api}/projects?category=${category}`, {
       method: "GET",

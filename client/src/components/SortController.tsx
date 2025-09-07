@@ -33,7 +33,7 @@ export default function SortController() {
       <SelectContent>
         <SelectGroup>
           {categories.map((categorie, index) => (
-            <SelectItem value={categorie.value} key={index}>
+            <SelectItem value={categorie.label} key={index}>
               {categorie.label}
             </SelectItem>
           ))}

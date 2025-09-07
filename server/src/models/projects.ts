@@ -4,9 +4,10 @@ const projectSchema = new Schema(
   {
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true },
-    owner: { type: String, required: true },
     category: { type: String },
     imageUrl: { type: String },
+    gitubLink: String,
+    deploymentLink: String,
   },
   { timestamps: true }
 );

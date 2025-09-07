@@ -5,6 +5,7 @@ import Link from "next/link";
 
 export default async function ProjectList({ category }: { category: string }) {
   const projects = await getProjects(category);
+
   if (projects.length === 0) {
     return (
       <div className="w-full flex flex-col items-center justify-center py-20">
@@ -19,22 +20,22 @@ export default async function ProjectList({ category }: { category: string }) {
   }
 
   return (
-    <div className="max-w-6xl px-5 mx-auto pb-7 gap-6 lg:gap-8 flex flex-col sm:grid  lg:grid-cols-2 xl:grid-cols-3">
+    <div className="max-w-7xl px-5 mx-auto pb-7 gap-6 lg:gap-8 flex flex-col sm:grid  lg:grid-cols-3 xl:grid-cols-3">
       {projects.map((project) => (
-        <ProjectCard key={project.id} project={project} />
+        <ProjectCard key={project._id} project={project} />
       ))}
     </div>
   );
 }
 
 export interface ProjectType {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   category: string;
-  coverImage: string;
-  github: string;
-  deployment: string;
+  imageUrl: string;
+  gitubLink: string;
+  deploymentLink: string;
 }
 
 interface ProjectCardProps {
@@ -46,7 +47,7 @@ function ProjectCard({ project }: ProjectCardProps) {
     <div className="group border border-border shadow-sm hover:shadow-md transition-all duration-300 bg-card w-full max-w-3xl mx-auto">
       <div className="relative h-60 w-full overflow-hidden">
         <Image
-          src={project.coverImage}
+          src={project?.imageUrl}
           alt={project.title}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -66,14 +67,14 @@ function ProjectCard({ project }: ProjectCardProps) {
 
         <div className="flex items-center justify-between gap-4 pt-4">
           <Link
-            href={project.github}
+            href={project.gitubLink}
             target="_blank"
             className="flex items-center gap-2 px-5 py-2 text-sm font-medium border hover:bg-accent hover:text-accent-foreground transition-colors"
           >
             <Github size={18} /> GitHub
           </Link>
           <Link
-            href={project.deployment}
+            href={project.deploymentLink}
             target="_blank"
             className="flex items-center gap-2 px-5 py-2 text-sm font-medium border hover:bg-primary hover:text-background transition-colors"
           >
