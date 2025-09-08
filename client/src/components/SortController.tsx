@@ -13,9 +13,9 @@ export default function SortController() {
   const router = useRouter();
   const categories = [
     { label: "All", value: "all" },
-    { label: "Web Development", value: "web-development" },
-    { label: "Mobile App", value: "mobile-app" },
-    { label: "Machine Learning", value: "machine-learning" },
+    { label: "Web-Development", value: "web-development" },
+    { label: "Mobile-App", value: "mobile-app" },
+    { label: "Machine-Learning", value: "machine-learning" },
     { label: "AI", value: "ai" },
   ];
 
@@ -33,7 +33,7 @@ export default function SortController() {
       <SelectContent>
         <SelectGroup>
           {categories.map((categorie, index) => (
-            <SelectItem value={categorie.value} key={index}>
+            <SelectItem value={categorie.label} key={index}>
               {categorie.label}
             </SelectItem>
           ))}
