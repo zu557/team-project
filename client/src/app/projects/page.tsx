@@ -3,10 +3,11 @@ import SortController from "@/components/SortController";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Suspense } from "react";
 interface PageProps {
-  searchParams: { category: string };
+  searchParams: { category?: string; page?: string };
 }
 export default function Projects({ searchParams }: PageProps) {
   const currentCategory = searchParams.category || "";
+  const page = searchParams.page || "1";
 
   return (
     <div className=" space-y-12 ">
@@ -33,12 +34,15 @@ export default function Projects({ searchParams }: PageProps) {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-5 space-y-6">
+      <div className="max-w-7xl mx-auto px-5 py-10 space-y-6">
         <div className="flex md:justify-end  justify-center w-full ">
           <SortController />
         </div>
-        <Suspense fallback={<LoadingSkeleton />} key={currentCategory}>
-          <ProjectList category={currentCategory} />
+        <Suspense
+          fallback={<LoadingSkeleton />}
+          key={`${currentCategory}-${page}`}
+        >
+          <ProjectList category={currentCategory} page={page} />
         </Suspense>
       </div>
     </div>

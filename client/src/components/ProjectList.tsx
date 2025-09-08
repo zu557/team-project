@@ -2,11 +2,18 @@ import getProjects from "@/api/getProjects";
 import { ExternalLink, Github } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import PaginationBar from "./PaginationBar";
 
-export default async function ProjectList({ category }: { category: string }) {
-  const projects = await getProjects(category);
+export default async function ProjectList({
+  category,
+  page = "1",
+}: {
+  category: string;
+  page: string;
+}) {
+  const response = await getProjects({ category, page });
 
-  if (projects.length === 0) {
+  if (!response || !response.data || response.data.length === 0) {
     return (
       <div className="w-full flex flex-col items-center justify-center py-20">
         <h2 className="text-xl font-semibold text-muted-foreground mb-4">
@@ -19,11 +26,16 @@ export default async function ProjectList({ category }: { category: string }) {
     );
   }
 
+  const { data, totalPage } = response;
+
   return (
-    <div className="max-w-7xl px-5 mx-auto pb-7 gap-6 lg:gap-8 flex flex-col sm:grid  lg:grid-cols-3 xl:grid-cols-3">
-      {projects.map((project) => (
-        <ProjectCard key={project._id} project={project} />
-      ))}
+    <div className="space-y-4">
+      <div className="max-w-7xl px-5 mx-auto pb-7 gap-6 lg:gap-8 flex flex-col sm:grid  lg:grid-cols-3 xl:grid-cols-3">
+        {data.map((project) => (
+          <ProjectCard key={project._id} project={project} />
+        ))}
+      </div>
+      <PaginationBar currentPage={Number(page)} totalPage={totalPage} />
     </div>
   );
 }
