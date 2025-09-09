@@ -8,7 +8,7 @@ export default function Hero() {
     <div
       className="h-[80vh] relative overflow-hidden"
       style={{
-        backgroundImage: "url('/about.png')",
+        backgroundImage: "url('/home.png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
