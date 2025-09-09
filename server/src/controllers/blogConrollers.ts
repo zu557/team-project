@@ -50,3 +50,17 @@ export const getBlogs = catchAsync(
     });
   }
 );
+
+export const getBlog = catchAsync(async (req, res, next) => {
+  const { blogId } = req.params;
+  console.log("blogId", blogId);
+  const blog = await BlogPost.findById(blogId);
+  if (!blog) {
+    new AppError("there is no blog with that id", 404);
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: blog,
+  });
+});

@@ -1,10 +1,17 @@
 import ProjectList from "@/components/ProjectList";
 import SortController from "@/components/SortController";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Metadata } from "next";
 import { Suspense } from "react";
 interface PageProps {
   searchParams: { category?: string; page?: string };
 }
+
+export const metaData: Metadata = {
+  title: "Our Projects | Debbal",
+  description:
+    "Explore Debbal’s portfolio of web development, UI/UX design, cloud, and enterprise solutions. Discover how we help businesses innovate and scale with impactful projects.",
+};
 export default function Projects({ searchParams }: PageProps) {
   const currentCategory = searchParams.category || "";
   const page = searchParams.page || "1";

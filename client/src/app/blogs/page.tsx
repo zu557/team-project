@@ -8,6 +8,17 @@ import { Suspense } from "react";
 interface pageProps {
   searchParams: { sort?: string; page?: string };
 }
+
+import type { Metadata } from "next";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Latest Blogs & Insights | Debbal",
+  description:
+    "Explore Debbal's latest blogs and insights on web development, UI/UX design, cloud solutions, full stack education, and digital transformation trends.",
+};
+
 export default function Blogs({ searchParams }: pageProps) {
   const { sort, page } = searchParams;
   return (
@@ -95,7 +106,10 @@ interface BlogCardProps {
 
 function BlogCard({ blog }: BlogCardProps) {
   return (
-    <div className="group border border-border shadow-sm hover:shadow-lg transition-all duration-300 bg-card w-full max-w-3xl mx-auto flex flex-col">
+    <Link
+      href={`/blogs/${blog._id}`}
+      className="group border border-border shadow-sm hover:shadow-lg transition-all duration-300 bg-card w-full max-w-3xl mx-auto flex flex-col"
+    >
       <div className="relative h-60 w-full overflow-hidden">
         <Image
           src={blog.coverImage}
@@ -113,12 +127,12 @@ function BlogCard({ blog }: BlogCardProps) {
           {blog.description}
         </p>
         <div className="mt-4">
-          <span className="text-primary font-medium text-sm group-hover:underline">
-            Read More →
+          <span className="text-primary flex items-center gap-1 font-medium text-sm group-hover:underline">
+            Read More <ArrowRight />
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 

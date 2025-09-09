@@ -62,7 +62,7 @@ export default function Footer() {
 
         <div>
           <h4 className="text-white font-medium mb-4">Get in Touch</h4>
-          <p className="text-sm text-gray-400 mb-4">hello@yourcompany.com</p>
+          <p className="text-sm text-gray-400 mb-4">info@debbal.com </p>
 
           <div className="flex space-x-4">
             <Link
