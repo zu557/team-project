@@ -15,18 +15,19 @@ export const getBlogs = catchAsync(
     next: NextFunction
   ) => {
     const queryObj: Record<string, unknown> = { ...req.query };
-    const excludedFields = ["page", "limit", "sort"];
+    console.log(queryObj);
+    const excludedFields = ["page", "sort"];
     excludedFields.forEach((el) => delete queryObj[el]);
 
     let query = BlogPost.find(queryObj);
 
-    if (req.query.sort && req.query.sort === "latest") {
+    if (req.query.sort && req.query.sort === "recent") {
       query = query.sort("createdAt");
     } else if (req.query.sort === "old") {
       query = query.sort("-createdAt");
     }
 
-    const limit = 4;
+    const limit = 6;
     if (req.query.page) {
       const page = Math.max(1, parseInt(req.query.page || "1", 10));
       const skip = (page - 1) * limit;

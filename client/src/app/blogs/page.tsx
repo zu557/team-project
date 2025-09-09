@@ -1,106 +1,18 @@
-"use client";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { getBlogs } from "@/api/getBlogs";
+import PaginationBar from "@/components/PaginationBar";
+import BlogsSort from "@/components/SortBlogs";
+import { Skeleton } from "@/components/ui/skeleton";
+
 import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-
-export default function Blogs() {
-  const [sortOrder, setSortOrder] = useState("recent");
-
-  const blogs = [
-    {
-      id: 1,
-      title: "Mastering React Hooks: A Deep Dive",
-      description:
-        "Unlock the full potential of React development with an in-depth exploration of custom hooks and their applications.",
-      coverImage:
-       "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1200&q=80",
-      timestamp: "2023-11-15T10:00:00Z",
-    },
-    {
-      id: 2,
-      title: "The Future of AI in Web Development",
-      description:
-        "Discover how artificial intelligence is reshaping the landscape of web development, from code generation to personalized user experiences.",
-      coverImage:
-        "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1200&q=80",
-      timestamp: "2023-11-20T14:30:00Z",
-    },
-    {
-      id: 3,
-      title: "Building Accessible Websites: A Comprehensive Guide",
-      description:
-        "Learn essential techniques and best practices to create inclusive web experiences for all users, regardless of ability.",
-      coverImage:
-       "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1200&q=80",
-      timestamp: "2023-11-10T09:15:00Z",
-    },
-    {
-      id: 4,
-      title: "Optimizing Performance in Next.js Applications",
-      description:
-        "Boost your Next.js app's speed and efficiency with advanced optimization strategies and practical tips.",
-      coverImage:
-        "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1200&q=80",
-      timestamp: "2023-11-25T16:45:00Z",
-    },
-    {
-      id: 5,
-      title: "Demystifying CSS Grid Layout",
-      description:
-        "A beginner-friendly guide to understanding and implementing powerful two-dimensional layouts with CSS Grid.",
-      coverImage:
-        "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1200&q=80",
-      timestamp: "2023-11-05T11:00:00Z",
-    },
-    {
-      id: 6,
-      title: "The Importance of Version Control with Git",
-      description:
-        "Explore why Git is indispensable for collaborative development and how to master its fundamental commands.",
-      coverImage:
-        "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1200&q=80",
-      timestamp: "2023-11-01T08:30:00Z",
-    },
-    {
-      id: 7,
-      title: "State Management in Large-Scale Applications",
-      description:
-        "Compare different state management solutions and find the best fit for your complex, enterprise-level applications.",
-      coverImage:
-        "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1200&q=80",
-      timestamp: "2023-10-28T13:00:00Z",
-    },
-    {
-      id: 8,
-      title: "Debugging JavaScript: Tips and Tricks",
-      description:
-        "Master the art of debugging JavaScript code efficiently with powerful browser developer tools and techniques.",
-      coverImage:
-        "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1200&q=80",
-      timestamp: "2023-10-22T15:00:00Z",
-    },
-  ];
-
-  const sortedBlogs = [...blogs].sort((a, b) => {
-    if (sortOrder === "recent") {
-      return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
-    } else {
-      return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
-    }
-  });
-
+import { Suspense } from "react";
+interface pageProps {
+  searchParams: { sort?: string; page?: string };
+}
+export default function Blogs({ searchParams }: pageProps) {
+  const { sort, page } = searchParams;
   return (
     <div className=" space-y-12 ">
       <div className="relative h-[23rem] flex items-center justify-center">
-        {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -109,10 +21,8 @@ export default function Blogs() {
           }}
         />
 
-        {/* Overlay */}
         <div className="absolute inset-0 bg-black/70" />
 
-        {/* Content */}
         <div className="relative z-10 text-center max-w-2xl px-4 space-y-4">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary">
             Our Latest Insights
@@ -124,35 +34,59 @@ export default function Blogs() {
         </div>
       </div>
 
-      <div className="flex md:justify-end justify-center w-full ">
-        <div className="flex items-center gap-3 ">
-          <Select onValueChange={(value) => setSortOrder(value)}>
-            <SelectTrigger className="w-[180px] cursor-pointer">
-              <SelectValue placeholder="Sort By" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="recent">Recent</SelectItem>
-                <SelectItem value="oldest">Oldest</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+      <div className="max-w-6xl mx-auto px-5 space-y-10 py-10">
+        <div className="flex md:justify-end justify-center w-full ">
+          <BlogsSort currentSort={sort} />
         </div>
-      </div>
-      <div className="max-w-6xl px-5 mx-auto pb-7 gap-6 lg:gap-8 flex flex-col sm:grid lg:grid-cols-2 xl:grid-cols-3">
-        {sortedBlogs.map((blog) => (
-          <BlogCard key={blog.id} blog={blog} />
-        ))}
+        <div>
+          <Suspense fallback={<LoadingSkeleton />} key={`${sort}-${page}`}>
+            <BlogsContent sort={sort} page={page} />
+          </Suspense>
+        </div>
       </div>
     </div>
   );
 }
 
-interface BlogType {
+async function BlogsContent({
+  sort,
+  page = "1",
+}: {
+  sort?: string;
+  page?: string;
+}) {
+  const response = await getBlogs({ sort, page });
+  if (!response?.data && response?.data.length === 0) {
+    return (
+      <div className="w-full flex flex-col items-center justify-center py-20">
+        <h2 className="text-xl font-semibold text-muted-foreground mb-4">
+          No Blogs found.
+        </h2>
+        <p className="text-muted-foreground">
+          Try changing your filter or check back later for new projects.
+        </p>
+      </div>
+    );
+  }
+  return (
+    <div className="space-y-6">
+      <div className="max-w-6xl px-5 mx-auto pb-7 gap-6 lg:gap-8 flex flex-col sm:grid lg:grid-cols-2 xl:grid-cols-3">
+        {response?.data.map((blog) => (
+          <BlogCard key={blog._id} blog={blog} />
+        ))}
+      </div>
+      <PaginationBar
+        currentPage={Number(page)}
+        totalPage={response?.totalPage}
+      />
+    </div>
+  );
+}
+export interface BlogType {
+  _id: string;
   title: string;
   description: string;
   coverImage: string;
-  timestamp: string;
 }
 
 interface BlogCardProps {
@@ -160,14 +94,8 @@ interface BlogCardProps {
 }
 
 function BlogCard({ blog }: BlogCardProps) {
-  const formattedDate = new Date(blog.timestamp).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-
   return (
-    <div className="group border border-border shadow-sm hover:shadow-md transition-all duration-300 bg-card w-full max-w-3xl mx-auto">
+    <div className="group border border-border shadow-sm hover:shadow-lg transition-all duration-300 bg-card w-full max-w-3xl mx-auto flex flex-col">
       <div className="relative h-60 w-full overflow-hidden">
         <Image
           src={blog.coverImage}
@@ -175,19 +103,50 @@ function BlogCard({ blog }: BlogCardProps) {
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        <span className="absolute top-4 left-4 bg-primary text-background text-xs font-semibold px-3 py-1 shadow-sm">
-          {formattedDate}
-        </span>
       </div>
 
-      <div className="px-4 py-6 space-y-4">
-        <h1 className="text-2xl font-semibold tracking-tight group-hover:text-primary transition-colors">
+      <div className="flex flex-col flex-1 px-5 py-6 space-y-3">
+        <h2 className="text-xl font-semibold tracking-tight group-hover:text-primary transition-colors line-clamp-2">
           {blog.title}
-        </h1>
-        <p className="text-muted-foreground text-base leading-relaxed">
+        </h2>
+        <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3">
           {blog.description}
         </p>
+        <div className="mt-4">
+          <span className="text-primary font-medium text-sm group-hover:underline">
+            Read More →
+          </span>
+        </div>
       </div>
+    </div>
+  );
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="max-w-6xl px-5 mx-auto pb-7 gap-6 lg:gap-8 flex flex-col sm:grid lg:grid-cols-2 xl:grid-cols-3">
+      {Array.from({ length: 12 }).map((_, i) => (
+        <div
+          key={i}
+          className="group border border-border shadow-sm bg-card w-full max-w-3xl mx-auto flex flex-col animate-pulse"
+        >
+          <div className="relative h-60 w-full overflow-hidden">
+            <Skeleton className="w-full h-full absolute top-0 left-0" />
+          </div>
+
+          <div className="flex flex-col flex-1 px-5 py-6 space-y-3">
+            <Skeleton className="h-6 w-2/3 rounded" />
+
+            <Skeleton className="h-4 w-full rounded" />
+            <Skeleton className="h-4 w-5/6 rounded" />
+            <Skeleton className="h-4 w-3/4 rounded" />
+
+            <div className="mt-4 w-24">
+              <Skeleton className="h-5 w-full rounded" />
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

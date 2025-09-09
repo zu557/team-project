@@ -3,10 +3,8 @@ import mongoose, { Schema, Model } from "mongoose";
 const blogPostSchema = new Schema(
   {
     title: { type: String, required: true, trim: true },
-    content: { type: String, required: true },
-    author: { type: String, required: true },
-    categories: { type: String },
-    featuredImage: { type: String },
+    description: { type: String, required: true },
+    coverImage: { type: String },
   },
   { timestamps: true }
 );
