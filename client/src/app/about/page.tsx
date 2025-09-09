@@ -57,8 +57,7 @@ export default function AboutPage() {
       <div
         className="h-92 relative  flex  flex-col justify-center items-center "
         style={{
-          backgroundImage:
-            'url("https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80")',
+          backgroundImage: 'url("/about.png")',
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}

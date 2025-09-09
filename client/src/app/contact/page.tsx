@@ -65,7 +65,7 @@ export default function ContactPage() {
       <section
         className="relative h-[60vh] flex items-center justify-center text-primary-foreground overflow-hidden"
         style={{
-          backgroundImage: 'url("/about.png")',
+          backgroundImage: 'url("/contact.png")',
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
