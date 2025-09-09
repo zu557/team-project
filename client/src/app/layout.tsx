@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Tinos } from "next/font/google";
 import "./globals.css";
 import Navbar from "./Navbar";
+import Footer from "./Footer";
+import Provider from "./Provider";
+import { Toaster } from "sonner";
 
 const tinos = Tinos({ subsets: ["latin"], weight: ["400", "700"] });
 
@@ -18,8 +21,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={tinos.className}>
-        <Navbar />
-        {children}
+        <Provider>
+          <Navbar />
+          {children}
+          <Footer />
+          <Toaster richColors />
+        </Provider>
       </body>
     </html>
   );

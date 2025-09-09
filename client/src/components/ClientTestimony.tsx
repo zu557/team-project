@@ -29,7 +29,7 @@ export default function Testimonials() {
   ];
 
   return (
-    <section className="py-20 ">
+    <section className="py-20  bg-sidebar-border">
       <div className="max-w-6xl mx-auto px-6 text-center">
         <h2 className="text-3xl md:text-4xl font-bold mb-12">
           What Our Clients Say
@@ -48,7 +48,11 @@ export default function Testimonials() {
               initial={{ opacity: 0, y: 40, scale: 0.95 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: i * 0.8, ease: [0, 0, 0.58, 1] }}
+              transition={{
+                duration: 0.8,
+                delay: i * 0.4,
+                ease: [0, 0, 0.58, 1],
+              }}
             >
               <Card className=" rounded-none shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <CardContent className="p-6 flex flex-col items-center text-center space-y-4">
