@@ -14,9 +14,7 @@ const projectSchema = new Schema(
 // Infer type from schema
 export type IProject = mongoose.InferSchemaType<typeof projectSchema>;
 
-const Project: Model<IProject> = mongoose.model<IProject>(
-  "Project",
-  projectSchema
-);
+// Create model
+const Project: Model<IProject> = mongoose.model<IProject>("Project", projectSchema);
 
 export default Project;
