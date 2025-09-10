@@ -13,7 +13,13 @@ const app = express();
 app.use(express.json());
 app.use(comprssion());
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://debbalcom.onrender.com",
+    methods: ["GET"],
+    credentials: true,
+  })
+);
 app.use(morgan("dev"));
 
 app.use("/api/v1/projects", projecRouter);
