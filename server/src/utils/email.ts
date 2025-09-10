@@ -62,6 +62,7 @@ This message was automatically generated from your website form.
   try {
     await transporter.sendMail(mailOptions);
   } catch (error) {
+    console.error("Email send error:", error);
     throw new Error("Failed to send email");
   }
 }
