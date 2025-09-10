@@ -36,5 +36,8 @@
     "concurrently": "^9.2.0",
     "typescript": "^5.9.2"
   },
-  "type": "module"
+  "type": "module",
+  "engines": {
+    "node": ">=10.0.0"
+  }
 }
