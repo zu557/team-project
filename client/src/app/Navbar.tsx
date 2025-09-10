@@ -7,7 +7,7 @@ export default function Navbar() {
     <div className="sticky top-0 px-6 py-4 flex items-center justify-between shadow bg-white z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between w-full">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.png" alt="Logo" width={40} height={40} />
+          <Image src="/Logo.png" alt="Logo" width={40} height={40} />
           <span className="text-primary text-xl font-bold">Debbal</span>
         </Link>
 
