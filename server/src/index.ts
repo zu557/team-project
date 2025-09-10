@@ -16,7 +16,7 @@ app.use(helmet());
 app.use(
   cors({
     origin: "https://debbalcom.onrender.com",
-    methods: ["GET"],
+    methods: ["GET", "POST"],
     credentials: true,
   })
 );
