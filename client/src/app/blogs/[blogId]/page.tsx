@@ -52,7 +52,7 @@ export default async function BlogsDetail({ params }: BlogProps) {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen">
-      <div className="relative py-10 h-[35vh] md:h-[50vh] lg:h-[60vh] flex items-center justify-center overflow-hidden">
+      <div className="relative px-10  h-fit py-10 flex items-center justify-center overflow-hidden">
         {blog.coverImage && (
           <Image
             src={blog.coverImage}
@@ -66,7 +66,9 @@ export default async function BlogsDetail({ params }: BlogProps) {
           <h1 className="text-4xl md:text-6xl font-extrabold  ">
             {blog.title}
           </h1>
-          <p className="text-white/80 text-lg md:text-xl">{blog.description}</p>
+          <p className="text-white/80 md:text-lg text-base ">
+            {blog.description}
+          </p>
           <Link
             href="/blogs"
             className="inline-flex items-center gap-2 mt-4 text-white bg-primary py-2 px-4 rounded-lg shadow-lg hover:scale-105 transition-transform font-semibold"
