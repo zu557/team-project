@@ -4,17 +4,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Metadata } from "next";
 import { Suspense } from "react";
 interface PageProps {
-  searchParams: { category?: string; page?: string };
+  searchParams: Promise<{ category?: string; page?: string }>;
 }
-
-export const metaData: Metadata = {
+export const metadata: Metadata = {
   title: "Our Projects | Debbal",
   description:
     "Explore Debbal’s portfolio of web development, UI/UX design, cloud, and enterprise solutions. Discover how we help businesses innovate and scale with impactful projects.",
 };
-export default function Projects({ searchParams }: PageProps) {
-  const currentCategory = searchParams.category || "";
-  const page = searchParams.page || "1";
+
+export default async function Projects({ searchParams }: PageProps) {
+  const { category, page } = await searchParams;
+  const currentCategory = category || "";
+  const currentPage = page || "1";
 
   return (
     <div className=" space-y-12 ">
@@ -49,7 +50,7 @@ export default function Projects({ searchParams }: PageProps) {
           fallback={<LoadingSkeleton />}
           key={`${currentCategory}-${page}`}
         >
-          <ProjectList category={currentCategory} page={page} />
+          <ProjectList category={currentCategory} page={currentPage} />
         </Suspense>
       </div>
     </div>

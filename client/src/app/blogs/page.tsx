@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import { Suspense } from "react";
 interface pageProps {
-  searchParams: { sort?: string; page?: string };
+  searchParams: Promise<{ sort?: string; page?: string }>;
 }
 
 import type { Metadata } from "next";
@@ -19,8 +19,8 @@ export const metadata: Metadata = {
     "Explore Debbal's latest blogs and insights on web development, UI/UX design, cloud solutions, full stack education, and digital transformation trends.",
 };
 
-export default function Blogs({ searchParams }: pageProps) {
-  const { sort, page } = searchParams;
+export default async function Blogs({ searchParams }: pageProps) {
+  const { sort, page } = await searchParams;
   return (
     <div className=" space-y-12 ">
       <div className="relative h-[23rem] flex items-center justify-center">

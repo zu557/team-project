@@ -4,13 +4,14 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Metadata } from "next";
 interface BlogProps {
-  params: { blogId: string };
+  params: Promise<{ blogId: string }>;
 }
 
 export async function generateMetadata({
   params,
 }: BlogProps): Promise<Metadata> {
-  const blog: BlogType | null = await getBlog(params.blogId);
+  const { blogId } = await params;
+  const blog: BlogType | null = await getBlog(blogId);
 
   if (!blog) {
     return {
@@ -38,7 +39,7 @@ export async function generateMetadata({
 }
 
 export default async function BlogsDetail({ params }: BlogProps) {
-  const { blogId } = params;
+  const { blogId } = await params;
   const blog: BlogType | null = await getBlog(blogId);
 
   if (!blog) {
@@ -76,7 +77,6 @@ export default async function BlogsDetail({ params }: BlogProps) {
         </div>
       </div>
 
-      {/* Content Section */}
       <div className="relative max-w-4xl mx-auto px-6 py-20 bg-gray-900/80 backdrop-blur-md rounded-xl shadow-xl space-y-12">
         <div
           className="prose prose-lg prose-invert max-w-none space-y-6"
