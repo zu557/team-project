@@ -52,7 +52,7 @@ export default async function BlogsDetail({ params }: BlogProps) {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen">
-      <div className="relative h-[35vh] md:h-[50vh] lg:h-[60vh] flex items-center justify-center overflow-hidden">
+      <div className="relative py-10 h-[35vh] md:h-[50vh] lg:h-[60vh] flex items-center justify-center overflow-hidden">
         {blog.coverImage && (
           <Image
             src={blog.coverImage}
