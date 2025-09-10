@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
           <Link href="/" className="flex items-center space-x-2">
-            <Image src="/logo.png" alt="Company Logo" width={50} height={50} />
+            <Image src="/Logo.png" alt="Company Logo" width={50} height={50} />
             <span className="text-xl font-semibold text-white">Debbal</span>
           </Link>
           <p className="mt-4 text-sm text-gray-400">

@@ -21,7 +21,7 @@ export default function NavbarMenu() {
       <SheetContent>
         <SheetHeader className="shadow">
           <SheetTitle className="flex items-center gap-2 ">
-            <Image src="/logo.png" alt="Logo" width={40} height={40} />
+            <Image src="/Logo.png" alt="Logo" width={40} height={40} />
             <span className="text-primary text-xl font-bold">Debbal</span>
           </SheetTitle>
         </SheetHeader>
