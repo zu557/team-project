@@ -8,15 +8,15 @@ const projectSchema = new Schema(
     imageUrl: { type: String },
     gitubLink: String,
     deploymentLink: String,
+    publicId: {type: String},
   },
   { timestamps: true }
 );
 
-type IProject = mongoose.InferSchemaType<typeof projectSchema>;
+// Infer type from schema
+export type IProject = mongoose.InferSchemaType<typeof projectSchema>;
 
-const Project: Model<IProject> = mongoose.model<IProject>(
-  "Project",
-  projectSchema
-);
+// Create model
+const Project: Model<IProject> = mongoose.model<IProject>("Project", projectSchema);
 
 export default Project;

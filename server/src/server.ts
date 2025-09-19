@@ -1,35 +1,50 @@
-import mongoose from "mongoose";
+import express, { Express } from "express";
+import cors from "cors";
 import dotenv from "dotenv";
-import app from "./index.js";
 dotenv.config();
 
-process.on("uncaughtException", (error) => {
-  console.log("uncaughtException", error);
-  process.exit(1);
+import { connectDB } from "./db/connect.js";
+connectDB();
+import AppError from "./utils/AppError.js"
+import blogRoute  from "./routes/blog.js"; 
+import projectRoute from "./routes/projects.js"; 
+import errorHandler from "./middleware/errorHandler.js"
+
+const app: Express = express();
+const PORT: number = Number(process.env.PORT) || 4000;
+
+app.use(cors());
+app.use(express.json());
+
+app.use("/api/project", projectRoute);
+app.use("/api/blog", blogRoute);
+
+
+app.get("/", (_, res) => {
+  res.send(" Server is running...");
+});
+// Handle undefined routes (404 Not Found)
+app.all('*', (req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-const dbUrl = process.env.MONGO_DB_URL;
-const password = process.env.PASSWORD;
-if (!dbUrl || !password) {
-  throw new Error("something wrong");
-}
-const DB = dbUrl.replace("<db_password>", password);
-mongoose
-  .connect(DB)
-  .then(() => {
-    console.log("DB connected successfully");
-  })
-  .catch((error) => {
-    console.log("DB connection Error", error);
-  });
+app.use(errorHandler)
 
-const port = process.env.PORT || 3000;
-
-const server = app.listen(port, () => {
-  console.log(`App is running on ${port}`);
+app.listen(PORT, () => {
+  console.log(` Server running at http://localhost:${PORT}`);
 });
 
-process.on("unhandledRejection", (error) => {
-  console.log("unhandledRejection", error);
-  server.close(() => process.exit(1));
+// Handle Unhandled Promise Rejections (e.g., DB connection failures not caught)
+process.on('unhandledRejection', (err: Error) => {
+  console.log('UNHANDLED REJECTION! Shutting down...');
+  console.error(err.name, err.message);
+    process.exit(1); 
 });
+
+// Handle Uncaught Exceptions (synchronous errors not caught anywhere)
+process.on('uncaughtException', (err: Error) => {
+  console.log('UNCAUGHT EXCEPTION!  Shutting down...');
+  console.error(err.name, err.message, err.stack);
+  process.exit(1);   
+});
+

@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       "tse4.mm.bing.net",
     ],
   },
+  /* config options here */
 };
 
 export default nextConfig;
