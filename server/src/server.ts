@@ -1,50 +1,81 @@
-import express, { Express } from "express";
+import express, { Express, Request, Response, NextFunction } from "express";
 import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+import compression from "compression";
 import dotenv from "dotenv";
+import { connectDB } from "./db/connect.js";
+import AppError from "./utils/AppError.js";
+import projecRouter from "./routes/projectRouter.js";
+import blogRouter from "./routes/blogRouter.js";
+import emailRouter from "./routes/emailRouter.js";
+import globalError from "./middleware/errorHandler.js";
+
+// Load environment variables from .env file
 dotenv.config();
 
-import { connectDB } from "./db/connect.js";
+// Connect to the database
 connectDB();
-import AppError from "./utils/AppError.js"
-import blogRoute  from "./routes/blog.js"; 
-import projectRoute from "./routes/projects.js"; 
-import errorHandler from "./middleware/errorHandler.js"
 
 const app: Express = express();
 const PORT: number = Number(process.env.PORT) || 4000;
+import bodyParser from 'body-parser';
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cors());
-app.use(express.json());
+// Middleware for parsing JSON data from the request body
 
-app.use("/api/project", projectRoute);
-app.use("/api/blog", blogRoute);
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
+// Apply security and performance middleware
+app.use(compression());
+app.use(helmet());
+app.use(
+  cors({
+    origin: "https://debbalcom.vercel.app",
+    methods: ["GET", "POST","PUT","DELETE"],
+    credentials: true,
+  })
+);
+app.use(morgan("dev")); // Log HTTP requests to the console
 
-
-app.get("/", (_, res) => {
-  res.send(" Server is running...");
+// Root route to check if the server is running
+app.get("/", (_: Request, res: Response) => {
+  res.send("Server is running...");
 });
+
+// Define API routes
+app.use("/api/v1/projects", projecRouter);
+app.use("/api/v1/blogs", blogRouter);
+app.use("/api/v1/contact", emailRouter);
+
 // Handle undefined routes (404 Not Found)
-app.all('*', (req, res, next) => {
+app.all('*', (req: Request, res: Response, next: NextFunction) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-app.use(errorHandler)
+// Global error handling middleware
+app.use(globalError);
 
-app.listen(PORT, () => {
-  console.log(` Server running at http://localhost:${PORT}`);
+// Start the server
+const server = app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
 });
 
 // Handle Unhandled Promise Rejections (e.g., DB connection failures not caught)
 process.on('unhandledRejection', (err: Error) => {
   console.log('UNHANDLED REJECTION! Shutting down...');
   console.error(err.name, err.message);
+  server.close(() => {
     process.exit(1); 
+  });
 });
 
 // Handle Uncaught Exceptions (synchronous errors not caught anywhere)
 process.on('uncaughtException', (err: Error) => {
-  console.log('UNCAUGHT EXCEPTION!  Shutting down...');
+  console.log('UNCAUGHT EXCEPTION! Shutting down...');
   console.error(err.name, err.message, err.stack);
-  process.exit(1);   
+  server.close(() => {
+    process.exit(1);
+  });
 });
-

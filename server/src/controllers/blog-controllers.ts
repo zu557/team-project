@@ -4,18 +4,55 @@ import Blog, { IBlogPost } from "../models/blogs.js";
 import { uploadToCloudinary } from "../utils/cloudinary.js";
 import cloudinary from "../config/cloudinary.js";
 
+/**
+ * Defines the structure for the query parameters used for filtering and pagination.
+ */
+interface BlogQuery {
+  page?: string;
+  sort?: string;
+}
 
-// --- Get all blogs ---
-const getBlogs = async (req: Request, res: Response, next: NextFunction) => {
+// --- Get all blogs with optional pagination and sorting ---
+export const getBlogs = async (
+  req: Request<{}, {}, {}, BlogQuery>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const data = await Blog.find();
+    const queryObj: Record<string, unknown> = { ...req.query };
+    const excludedFields = ["page", "sort"];
+    excludedFields.forEach((el) => delete queryObj[el]);
+
+    let query = Blog.find(queryObj);
+
+    if (req.query.sort) {
+      if (req.query.sort === "recent") {
+        query = query.sort("-createdAt");
+      } else if (req.query.sort === "old") {
+        query = query.sort("createdAt");
+      }
+    } else {
+      query = query.sort("-createdAt"); // Default to sorting by most recent
+    }
+
+    const limit = 6;
+    const page = Math.max(1, parseInt(req.query.page || "1", 10));
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    const data = await query;
 
     if (!data || data.length === 0) {
-      return next(new AppError("No blogs available at the moment", 404));
+      return next(new AppError("No Blogs available at the moment", 404));
     }
+
+    const total = await Blog.countDocuments(queryObj);
+    const totalPage = Math.ceil(total / limit);
 
     res.status(200).json({
       status: "success",
+      totalPage,
       data,
     });
   } catch (error) {
@@ -24,7 +61,7 @@ const getBlogs = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 // --- Get a single blog by its ID ---
-const getBlogById = async (req: Request, res: Response, next: NextFunction) => {
+export const getBlogById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const blog = await Blog.findById(id);
@@ -43,23 +80,22 @@ const getBlogById = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 // --- Add a new blog (with image upload) ---
-const addBlog = async (req: Request, res: Response, next: NextFunction) => {
+export const addBlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const body = req.body as Pick<
-      IBlogPost,
-      "title" | "content" | "author" | "categories"
-    >;
+    // Note: 'content' is now 'description' in the new schema.
+    const body = req.body as Pick<IBlogPost, "title" | "description" | "author" | "categories">;
 
     if (!req.file) {
       return next(new AppError("Image is required", 400));
     }
 
     // Upload to Cloudinary
-    const { imageUrl, publicId } = await uploadToCloudinary(req.file.buffer);
+    // Renamed 'imageUrl' to 'coverImage' to match the new schema
+    const { imageUrl: coverImage, publicId } = await uploadToCloudinary(req.file.buffer);
 
     const newBlog = new Blog({
       ...body,
-      imageUrl,
+      coverImage,
       publicId,
     });
 
@@ -75,7 +111,7 @@ const addBlog = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 // --- Update an existing blog by ID (optionally replace image) ---
-const updateBlog = async (req: Request, res: Response, next: NextFunction) => {
+export const updateBlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const body = req.body as Partial<IBlogPost>;
@@ -93,8 +129,9 @@ const updateBlog = async (req: Request, res: Response, next: NextFunction) => {
       }
 
       // Upload new image
-      const { imageUrl, publicId } = await uploadToCloudinary(req.file.buffer);
-      body.imageUrl = imageUrl;
+      // Renamed 'imageUrl' to 'coverImage' to match the new schema
+      const { imageUrl: coverImage, publicId } = await uploadToCloudinary(req.file.buffer);
+      body.coverImage = coverImage;
       body.publicId = publicId;
     }
 
@@ -113,7 +150,7 @@ const updateBlog = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 // --- Delete a blog by ID (remove from DB + Cloudinary) ---
-const deleteBlog = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteBlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
 
@@ -131,12 +168,10 @@ const deleteBlog = async (req: Request, res: Response, next: NextFunction) => {
     await Blog.findByIdAndDelete(id);
 
     res.status(200).json({
-      status: "success",
+      sztatus: "success",
       message: "Blog deleted successfully",
     });
   } catch (error) {
     next(error);
   }
 };
-
-export { getBlogs, getBlogById, addBlog, updateBlog, deleteBlog };
