@@ -154,7 +154,7 @@ export default function ServicePage() {
             Get in Touch
           </Button>
         </motion.div>
-        <Testimonials />
+        <ClientTestimony />
       </div>
     </div>
   );

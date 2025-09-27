@@ -1,53 +1,54 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express"; 
 import AppError from "../utils/AppError.js";
 import Project, { IProject } from "../models/projects.js";
 import { uploadToCloudinary } from "../utils/cloudinary.js";
 import cloudinary from "../config/cloudinary.js";
+import { isString } from "lodash-es";
 
+/**
+ * Defines the structure for the query parameters used for filtering and pagination.
+ */
 interface ProjectQuery {
-  category?: string;
   page?: string;
   sort?: string;
 }
 
-// --- Get all projects with optional filtering, pagination, and sorting ---
-const getProjects = async (
+// --- Get all projects with optional pagination and sorting ---
+export const getProjects = async (
   req: Request<{}, {}, {}, ProjectQuery>,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { category, page, sort } = req.query;
+    const queryObj: Record<string, unknown> = { ...req.query };
+    const excludedFields = ["page", "sort"];
+    excludedFields.forEach((el) => delete queryObj[el]);
 
-    let query: Record<string, string> = {};
-    if (category && category !== "All") {
-      query.category = category;
+    let query = Project.find(queryObj);
+
+    if (req.query.sort) {
+      if (req.query.sort === "recent") {
+        query = query.sort("-createdAt");
+      } else if (req.query.sort === "old") {
+        query = query.sort("createdAt");
+      }
+    } else {
+      query = query.sort("-createdAt"); // Default to sorting by most recent
     }
 
     const limit = 6;
-    const pageNum = Math.max(1, Number(page));
-    const skip = (pageNum - 1) * limit;
+    const page = Math.max(1, parseInt(req.query.page || "1", 10));
+    const skip = (page - 1) * limit;
 
-    let projectQuery = Project.find(query);
+    query = query.skip(skip).limit(limit);
 
-    // Apply sorting
-    if (sort === "recent") {
-      projectQuery = projectQuery.sort("-createdAt");
-    } else if (sort === "old") {
-      projectQuery = projectQuery.sort("createdAt");
-    } else {
-      projectQuery = projectQuery.sort("-createdAt"); // Default sort
-    }
-
-    const [data, total] = await Promise.all([
-      projectQuery.skip(skip).limit(limit),
-      Project.countDocuments(query),
-    ]);
+    const data = await query;
 
     if (!data || data.length === 0) {
-      return next(new AppError("No projects available at the moment", 404));
+      return next(new AppError("No Projects available at the moment", 404));
     }
 
+    const total = await Project.countDocuments(queryObj);
     const totalPage = Math.ceil(total / limit);
 
     res.status(200).json({
@@ -60,8 +61,12 @@ const getProjects = async (
   }
 };
 
-// --- Get a single project by ID ---
-const getProjectById = async (req: Request, res: Response, next: NextFunction) => {
+// --- Get a single project by its ID ---
+export const getProjectById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
     const project = await Project.findById(id);
@@ -78,18 +83,27 @@ const getProjectById = async (req: Request, res: Response, next: NextFunction) =
     next(error);
   }
 };
-
-// --- Add a new project (with image upload) ---
-const addProject = async (req: Request, res: Response, next: NextFunction) => {
+export const addProject = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const body = req.body as Pick<IProject, "title" | "description" | "category" | "gitubLink" | "deploymentLink">;
-
-    if (!req.file) {
-      return next(new AppError("Image is required", 400));
+    const { post_data } = req.body;
+    if (!post_data || typeof post_data !== "string") {
+      return next(new AppError("Project post data is missing or invalid", 400));
     }
 
-    // Upload image to Cloudinary
-    const { imageUrl, publicId } = await uploadToCloudinary(req.file.buffer);
+    const body = JSON.parse(post_data) as Pick<
+      IProject,
+      "title" | "description" | "category" | "githubLink" | "deploymentLink"
+    >;
+
+    // Declare variables in outer scope
+    let imageUrl: string | undefined;
+    let publicId: string | undefined;
+
+    if (req.file) {
+      const uploaded = await uploadToCloudinary(req.file.buffer);
+      imageUrl = uploaded.imageUrl;
+      publicId = uploaded.publicId;
+    }
 
     const newProject = new Project({
       ...body,
@@ -108,18 +122,26 @@ const addProject = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-// --- Update an existing project by ID (with optional new image) ---
-const updateProject = async (req: Request, res: Response, next: NextFunction) => {
+// --- Update an existing project by ID (optionally replace image) ---
+export const updateProject = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
-    const body = req.body as Partial<IProject>;
+
+    // Parse the body if it's sent as a JSON string
+    const body = isString(req.body.post_data)
+      ? JSON.parse(req.body.post_data)
+      : req.body;
 
     const project = await Project.findById(id);
     if (!project) {
       return next(new AppError("Project not found", 404));
     }
 
-    // If new image is provided, replace old one
+    // If a new image is uploaded, replace the old one
     if (req.file) {
       // Delete old image from Cloudinary
       if (project.publicId) {
@@ -127,8 +149,9 @@ const updateProject = async (req: Request, res: Response, next: NextFunction) =>
       }
 
       // Upload new image
-      const { imageUrl, publicId } = await uploadToCloudinary(req.file.buffer);
-
+      const { imageUrl, publicId } = await uploadToCloudinary(
+        req.file.buffer
+      );
       body.imageUrl = imageUrl;
       body.publicId = publicId;
     }
@@ -147,8 +170,12 @@ const updateProject = async (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
-// --- Delete a project by ID (and remove its Cloudinary image) ---
-const deleteProject = async (req: Request, res: Response, next: NextFunction) => {
+// --- Delete a project by ID (remove from DB + Cloudinary) ---
+export const deleteProject = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
 
@@ -162,21 +189,14 @@ const deleteProject = async (req: Request, res: Response, next: NextFunction) =>
       await cloudinary.uploader.destroy(project.publicId);
     }
 
+    // Delete from DB
     await Project.findByIdAndDelete(id);
 
     res.status(200).json({
       status: "success",
-      data: null,
+      message: "Project deleted successfully",
     });
   } catch (error) {
     next(error);
   }
-};
-
-export  {
-  getProjects,
-  getProjectById,
-  addProject,
-  updateProject,
-  deleteProject,
 };

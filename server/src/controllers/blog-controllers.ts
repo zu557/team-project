@@ -3,6 +3,7 @@ import AppError from "../utils/AppError.js";
 import Blog, { IBlogPost } from "../models/blogs.js";
 import { uploadToCloudinary } from "../utils/cloudinary.js";
 import cloudinary from "../config/cloudinary.js";
+import lodash from "lodash";
 
 /**
  * Defines the structure for the query parameters used for filtering and pagination.
@@ -82,16 +83,25 @@ export const getBlogById = async (req: Request, res: Response, next: NextFunctio
 // --- Add a new blog (with image upload) ---
 export const addBlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // Note: 'content' is now 'description' in the new schema.
-    const body = req.body as Pick<IBlogPost, "title" | "description" | "author" | "categories">;
+    // Access the blog data from the 'post_data' field
+    const { post_data } = req.body;
 
+    // Ensure post_data exists and is a string
+    if (!post_data || !lodash.isString(post_data)) {
+      return next(new AppError("Blog post data is missing or invalid", 400));
+    }
+
+    // Parse the JSON string into a JavaScript object
+    const body = JSON.parse(post_data) as Pick<IBlogPost, "title" | "description" | "author" | "categories"| "content">;
+
+    // Check if an image file was provided
     if (!req.file) {
       return next(new AppError("Image is required", 400));
     }
 
-    // Upload to Cloudinary
-    // Renamed 'imageUrl' to 'coverImage' to match the new schema
+
     const { imageUrl: coverImage, publicId } = await uploadToCloudinary(req.file.buffer);
+    console.log("Cloudinary upload successful!");
 
     const newBlog = new Blog({
       ...body,
@@ -114,8 +124,10 @@ export const addBlog = async (req: Request, res: Response, next: NextFunction) =
 export const updateBlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const body = req.body as Partial<IBlogPost>;
 
+    // Parse the body if it's sent as a JSON string
+    const body = lodash.isString(req.body.post_data) ? JSON.parse(req.body.post_data) : req.body;
+    
     const blog = await Blog.findById(id);
     if (!blog) {
       return next(new AppError("Blog not found", 404));
@@ -129,7 +141,6 @@ export const updateBlog = async (req: Request, res: Response, next: NextFunction
       }
 
       // Upload new image
-      // Renamed 'imageUrl' to 'coverImage' to match the new schema
       const { imageUrl: coverImage, publicId } = await uploadToCloudinary(req.file.buffer);
       body.coverImage = coverImage;
       body.publicId = publicId;

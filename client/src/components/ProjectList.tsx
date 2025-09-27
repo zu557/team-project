@@ -1,6 +1,6 @@
 import getProjects from "@/api/getProjects";
 import { ExternalLink, Github } from "lucide-react";
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import PaginationBar from "./PaginationBar";
 
@@ -12,7 +12,7 @@ export default async function ProjectList({
   page: string;
 }) {
   const response = await getProjects({ category, page });
-
+ console.log('frontEnd Response :',response)
   if (!response || !response.data || response.data.length === 0) {
     return (
       <div className="w-full flex flex-col items-center justify-center py-20">
@@ -46,7 +46,7 @@ export interface ProjectType {
   description: string;
   category: string;
   imageUrl: string;
-  gitubLink: string;
+  githubLink: string;
   deploymentLink: string;
 }
 
@@ -58,10 +58,10 @@ function ProjectCard({ project }: ProjectCardProps) {
   return (
     <div className="group border border-border shadow-sm hover:shadow-md transition-all duration-300 bg-card w-full max-w-3xl mx-auto">
       <div className="relative h-60 w-full overflow-hidden">
-        <Image
+        <img
           src={project?.imageUrl}
           alt={project.title}
-          fill
+          fill="true"
           className="object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <span className="absolute top-4 left-4 bg-primary text-background text-xs font-semibold px-3 py-1 shadow-sm">
@@ -79,7 +79,7 @@ function ProjectCard({ project }: ProjectCardProps) {
 
         <div className="flex items-center justify-between gap-4 pt-4">
           <Link
-            href={project.gitubLink}
+            href={project.githubLink}
             target="_blank"
             className="flex items-center gap-2 px-5 py-2 text-sm font-medium border hover:bg-accent hover:text-accent-foreground transition-colors"
           >

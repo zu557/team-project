@@ -12,9 +12,9 @@ const projectSchema = new Schema(
 
     imageUrl: { type: String },
 
-    gitubLink: String,
+    githubLink: String,
 
-    deploymentLink: String,
+    deploymentLink:{ type: String, required: true },
 
     publicId: {type: String},
 

@@ -1,0 +1,118 @@
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "zu558",
+  "password": "1234"
+}
+
+# POST http://localhost:5000/api/v1/blogs
+# Content-Type: multipart/form-data; boundary=myBoundary
+
+# --myBoundary
+# Content-Disposition: form-data; name="post_data"
+# Content-Type: application/json
+
+# {"title":"My 7 Blog Post Edited","description":"edited edidted .","author":"zuzu Doe","categories":"Technology, AI"}
+
+# --myBoundary
+# Content-Disposition: form-data; name="image"; filename="AI-4-Every-1.png"
+# Content-Type: image/png
+
+# < C:\Users\zuber\Pictures\AI-4-Every-1.png
+
+# --myBoundary--
+
+
+
+# update data only with out file 
+# PATCH http://localhost:5000/api/v1/blogs/68ce6edd25d5422ada56f278
+# Content-Type: multipart/form-data; boundary=myBoundary
+
+# --myBoundary
+# Content-Disposition: form-data; name="post_data"
+# Content-Type: application/json
+
+# {"title":"My First  Blog Post third times with out file Edited","description":"edited edidted .","author":"zuzu Doe","categories":"Technology, AI"}
+
+# this is mezgia
+# --myBoundary--
+
+
+
+# update all properties single blog
+# PATCH http://localhost:5000/api/v1/blogs/68ce6edd25d5422ada56f278
+# Content-Type: multipart/form-data; boundary=myBoundary
+
+# --myBoundary
+# Content-Disposition: form-data; name="post_data"
+# Content-Type: application/json
+
+# {"title":"My First  Blog Post Edited","description":"edited edidted .","author":"zuzu Doe","categories":"Technology, AI"}
+
+# --myBoundary
+# Content-Disposition: form-data; name="image"; filename="Footer.png"
+# Content-Type: image/png
+
+# < C:\Users\zuber\Pictures\Footer.png
+
+# --myBoundary--
+
+
+
+# Update a project with JSON data
+# This is the standard way to send text-only updates.
+# PATCH http://localhost:5000/api/v1/projects/68ce95e46d5c5015d5672314
+# Content-Type: application/json
+
+# {
+# "title": "This Project Has Been Updated",
+# "description": "The description has been corrected to reflect the changes to the project."
+# }
+
+
+
+# POST http://localhost:5000/api/v1/blogs
+# Content-Type: multipart/form-data; boundary=myBoundary
+
+# --myBoundary
+# Content-Disposition: form-data; name="post_data"
+# Content-Type: application/json
+
+#  {"title":"My 4  Blog Post Edited","description":"edited edidted .","author":"zuzu Doe","categories":"Technology, AI"}
+
+# --myBoundary
+# Content-Disposition: form-data; name="image"; filename="AI-4-Every-1.png"
+# Content-Type: image/png
+
+# < C:\Users\zuber\Pictures\AI-4-Every-1.png
+
+# --myBoundary--
+
+
+
+# POST http://localhost:5000/api/v1/blogs
+# Content-Type: multipart/form-data; boundary=myBoundary
+
+# --myBoundary
+# Content-Disposition: form-data; name="title"
+
+# My fourth Blog Post
+# --myBoundary
+# Content-Disposition: form-data; name="description"
+
+# This is a detailed description of my very first blog post, covering all the key points I want to make. It's a great example of a well-written blog entry.
+# --myBoundary
+# Content-Disposition: form-data; name="author"
+
+# John Doe
+# --myBoundary
+# Content-Disposition: form-data; name="categories"
+
+# Technology, Web Development
+# --myBoundary
+# Content-Disposition: form-data; name="coverImage"; filename="download.png"
+# Content-Type: image/png
+
+# < C:\Users\zuber\Pictures\download.png
+# --myBoundary--

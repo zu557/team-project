@@ -81,7 +81,7 @@ async function BlogsContent({
   }
   return (
     <div className="space-y-6">
-      <div className="max-w-6xl px-5 mx-auto pb-7 gap-6 lg:gap-8 flex flex-col sm:grid lg:grid-cols-2 xl:grid-cols-3">
+      <div className="max-w-6xl px-5 mx-auto pb-7 gap-6 lg:gap-8 flex flex-col sm:grid lg:grid-cols-3 xl:grid-cols-3">
         {response?.data.map((blog) => (
           <BlogCard key={blog._id} blog={blog} />
         ))}
@@ -93,12 +93,17 @@ async function BlogsContent({
     </div>
   );
 }
+// src/types/blog.ts
 export interface BlogType {
   _id: string;
   title: string;
   description: string;
+  content: string;
+  author: string;
+  categories: string;
   coverImage: string;
 }
+
 
 interface BlogCardProps {
   blog: BlogType;
@@ -114,9 +119,10 @@ function BlogCard({ blog }: BlogCardProps) {
         <Image
           src={blog.coverImage}
           alt={blog.title}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
-        />
+          fill={true}
+          className="absolute top-0 left-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 rounded-lg shadow-md"
+  />
+       
       </div>
 
       <div className="flex flex-col flex-1 px-5 py-6 space-y-3">
@@ -138,7 +144,7 @@ function BlogCard({ blog }: BlogCardProps) {
 
 function LoadingSkeleton() {
   return (
-    <div className="max-w-6xl px-5 mx-auto pb-7 gap-6 lg:gap-8 flex flex-col sm:grid lg:grid-cols-2 xl:grid-cols-3">
+    <div className="max-w-6xl px-5 mx-auto pb-7 gap-6 lg:gap-8 flex flex-col sm:grid lg:grid-cols-3 xl:grid-cols-3">
       {Array.from({ length: 12 }).map((_, i) => (
         <div
           key={i}

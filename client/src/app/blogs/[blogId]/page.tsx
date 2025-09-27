@@ -1,7 +1,8 @@
 import { getBlog, BlogType } from "@/api/getBlog";
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Metadata } from "next";
 interface BlogProps {
   params: Promise<{ blogId: string }>;
@@ -50,41 +51,65 @@ export default async function BlogsDetail({ params }: BlogProps) {
     );
   }
 
-  return (
-    <div className="bg-gray-900 text-white min-h-screen">
-      <div className="relative px-10  h-fit py-10 flex items-center justify-center overflow-hidden">
-        {blog.coverImage && (
-          <Image
-            src={blog.coverImage}
-            alt={blog.title}
-            fill
-            className="object-cover brightness-75 scale-105 hover:scale-110 transition-transform duration-700"
-          />
-        )}
-        <div className="absolute inset-0 bg-black/60" />
-        <div className="relative z-10 max-w-3xl px-6 text-center space-y-4">
-          <h1 className="text-4xl md:text-6xl font-extrabold  ">
+
+
+// Make sure your Tinos font is correctly imported and configured in next.config.js
+// import { Tinos } from 'next/font/google';
+// const tinos = Tinos({ subsets: ['latin'], weight: ['400', '700'] });
+
+// Assume blog type and data are available as props
+// const { blog } = props;
+
+
+
+return (
+  <div className="relative bg-gray-950 min-h-screen font-sans text-gray-100 antialiased">
+    {/* Fixed Background Image */}
+    {blog.coverImage && (
+      <img
+        src={blog.coverImage}
+        alt={blog.title}
+        layout="fill"
+        objectfit="cover"
+        className="fixed inset-0 z-0 brightness-[.25] blur-sm transition-all duration-700"
+      />
+    )}
+    
+    {/* Main Content Container */}
+    <div className="relative z-10">
+      {/* Blog Header with Title and Description */}
+      <header className="py-24 px-6 md:py-32 flex flex-col items-center justify-center text-center backdrop-blur-sm bg-gray-950/20">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <h1 className="text-4xl md:text-6xl font-extrabold leading-tight text-white">
             {blog.title}
           </h1>
-          <p className="text-white/80 md:text-lg text-base ">
+          <p className="text-lg md:text-xl text-gray-300">
             {blog.description}
           </p>
-          <Link
-            href="/blogs"
-            className="inline-flex items-center gap-2 mt-4 text-white bg-primary py-2 px-4 rounded-lg shadow-lg hover:scale-105 transition-transform font-semibold"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Back to Blogs
-          </Link>
         </div>
+      </header>
+      
+      {/* Back Button */}
+      <div className="relative z-20 flex justify-center py-4 -mt-10">
+        <Link
+          href="/blogs"
+          className="inline-flex items-center gap-2 text-white bg-blue-600 px-6 py-3 rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-300 font-semibold transform hover:scale-105"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          Back to Blogs
+        </Link>
       </div>
 
-      <div className="relative max-w-4xl mx-auto px-6 py-20 bg-gray-900/80 backdrop-blur-md rounded-xl shadow-xl space-y-12">
-        <div
-          className="prose prose-lg prose-invert max-w-none space-y-6"
-          dangerouslySetInnerHTML={{ __html: blog.content }}
-        />
-      </div>
+      {/* Blog Content Section */}
+      <main className="relative z-10 py-10 px-4 md:px-6">
+        <div className="max-w-4xl mx-auto bg-gray-900/90 backdrop-blur-xl rounded-2xl shadow-2xl p-6 md:p-12">
+          <div
+            className="prose prose-xl prose-invert max-w-none space-y-6 leading-relaxed text-gray-200"
+            dangerouslySetInnerHTML={{ __html: blog.content }}
+          />
+        </div>
+      </main>
     </div>
-  );
+  </div>
+);
 }

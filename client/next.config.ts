@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
       "tse2.mm.bing.net",
       "tse3.mm.bing.net", // 👈 add this
       "tse4.mm.bing.net",
+      "res.cloudinary.com",
     ],
   },
   /* config options here */

@@ -5,6 +5,7 @@ const blogPostSchema = new Schema(
   {
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true },
+    content: {type:String, required:true},
     coverImage: { type: String },
     author: { type: String, required: true },
     categories: { type: String },

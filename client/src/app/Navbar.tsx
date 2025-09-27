@@ -1,5 +1,6 @@
 import Link from "next/link";
-
+import Image from "next/image";
+import NavBarMenu from "./NavBarMenu"
 export default function Navbar() {
   return (
     <div className="sticky top-0 px-6 py-4 flex items-center justify-between shadow bg-white z-50">
@@ -34,7 +35,7 @@ export default function Navbar() {
         </ul>
         <div className="md:hidden">
           {" "}
-          <NavbarMenu />
+          <NavBarMenu />
         </div>
       </div>
     </div>
