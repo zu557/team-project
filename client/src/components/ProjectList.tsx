@@ -1,8 +1,9 @@
-import getProjects from "@/api/getProjects";
+import {getProjects} from "@/api/getProjects";
 import { ExternalLink, Github } from "lucide-react";
 // import Image from "next/image";
 import Link from "next/link";
 import PaginationBar from "./PaginationBar";
+import {ProjectType} from "@/types/project"
 
 export default async function ProjectList({
   category,
@@ -40,15 +41,6 @@ export default async function ProjectList({
   );
 }
 
-export interface ProjectType {
-  _id: string;
-  title: string;
-  description: string;
-  category: string;
-  imageUrl: string;
-  githubLink: string;
-  deploymentLink: string;
-}
 
 interface ProjectCardProps {
   project: ProjectType;
@@ -61,7 +53,6 @@ function ProjectCard({ project }: ProjectCardProps) {
         <img
           src={project?.imageUrl}
           alt={project.title}
-          fill="true"
           className="object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <span className="absolute top-4 left-4 bg-primary text-background text-xs font-semibold px-3 py-1 shadow-sm">
@@ -78,13 +69,13 @@ function ProjectCard({ project }: ProjectCardProps) {
         </p>
 
         <div className="flex items-center justify-between gap-4 pt-4">
-          <Link
+          {project.githubLink && <Link
             href={project.githubLink}
             target="_blank"
             className="flex items-center gap-2 px-5 py-2 text-sm font-medium border hover:bg-accent hover:text-accent-foreground transition-colors"
           >
             <Github size={18} /> GitHub
-          </Link>
+          </Link>}
           <Link
             href={project.deploymentLink}
             target="_blank"

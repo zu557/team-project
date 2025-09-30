@@ -27,7 +27,7 @@ export const registerUser = async (req: Request, res: Response) => {
     username,
     password: hashedPassword,
   });
-
+ 
   // 5. Generate JWT
   const token = generateToken(user._id.toString());
 
@@ -35,18 +35,16 @@ export const registerUser = async (req: Request, res: Response) => {
   res
     .cookie("token", token, {
       httpOnly: true,                          // safer against XSS
-      // secure: process.env.NODE_ENV === "production", // HTTPS only in production
-      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production", // HTTPS only in production
+      sameSite: "none",
+      domain: "localhost",
       maxAge: 24 * 60 * 60 * 1000,              // 1 day
       path: "/",
     })
     .status(201)
     .json({
       message: "User registered successfully",
-      user: {
-        id: user._id,
-        username: user.username,
-      },
+      
     });
 };
 
@@ -63,7 +61,22 @@ export const loginUser = async (req: Request, res: Response) => {
   if (!isMatch) return res.status(401).json({ message: "Password does not match" });
 
   const token = generateToken(user._id.toString());
-  res.json({ token });
+  
+  // 6. Set the cookie **and** return JSON
+  res
+    .cookie("token", token, {
+      httpOnly: true,                          // safer against XSS
+      secure: process.env.NODE_ENV === "production", // HTTPS only in production
+      sameSite: "none",
+      domain: "localhost",
+      maxAge: 24 * 60 * 60 * 1000,              // 1 day
+      path: "/",
+    })
+    .status(201)
+    .json({
+      message: "User registered successfully",
+      
+    });
 };
 
 // import { Request, Response } from "express";

@@ -1,9 +1,10 @@
 import { getBlogs } from "@/api/getBlogs";
 import PaginationBar from "@/components/PaginationBar";
+import {BlogType} from "@/types/blog"
 import BlogsSort from "@/components/SortBlogs";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import Image from "next/image";
+// import Image from "next/image";
 import { Suspense } from "react";
 interface pageProps {
   searchParams: Promise<{ sort?: string; page?: string }>;
@@ -93,16 +94,6 @@ async function BlogsContent({
     </div>
   );
 }
-// src/types/blog.ts
-export interface BlogType {
-  _id: string;
-  title: string;
-  description: string;
-  content: string;
-  author: string;
-  categories: string;
-  coverImage: string;
-}
 
 
 interface BlogCardProps {
@@ -116,10 +107,10 @@ function BlogCard({ blog }: BlogCardProps) {
       className="group border border-border shadow-sm hover:shadow-lg transition-all duration-300 bg-card w-full max-w-3xl mx-auto flex flex-col"
     >
       <div className="relative h-60 w-full overflow-hidden">
-        <Image
+        <img
           src={blog.coverImage}
           alt={blog.title}
-          fill={true}
+          // fill={true}
           className="absolute top-0 left-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 rounded-lg shadow-md"
   />
        

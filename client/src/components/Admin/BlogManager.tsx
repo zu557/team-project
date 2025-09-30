@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback, FC } from "react";
 import { getBlogs } from "@/api/getBlogs";
 import { deleteBlog } from "@/api/deleteBlog";
-import PaginationBar from "@/components/PaginationBar";
+import PaginationBar from "@/components/Admin/PaginationBar";
 import BlogForm from "@/components/BlogForm";
 import { BlogType } from "@/types/blog";   
 import { useSearchParams } from 'next/navigation';
@@ -52,7 +52,7 @@ const BlogCard: FC<BlogCardProps> = ({ blog, onEdit, onDelete }) => (
 const BlogManager: FC = () => {
     const params = useSearchParams();
   const sort = params.get('sort') || undefined;
-  const page = params.get('page') || undefined;
+  const [page, setPage] = useState<number>(1); 
   console.log("this is from Blog manager , page is and sort is :", page, sort)
   const [blogs, setBlogs] = useState<BlogType[]>([]);
   const [editingBlog, setEditingBlog] = useState<BlogType | null>(null);
@@ -64,7 +64,7 @@ const BlogManager: FC = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError("");
-    const res = await getBlogs({ sort, page });
+    const res = await getBlogs({ sort, page: page.toString()  });
     if (res) {
       if (!res.data || res.data.length === 0) {
         setError("No Blogs found.");
@@ -150,7 +150,7 @@ const BlogManager: FC = () => {
           ))}
         </div>
 
-        <PaginationBar currentPage={Number(page) || 1} totalPage={totalPage} />
+        <PaginationBar currentPage={Number(page) || 1} totalPage={totalPage} onChange={(p) => setPage(p)} />
       </div>
     </div>
   );

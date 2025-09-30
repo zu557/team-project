@@ -1,4 +1,4 @@
-import { ProjectType } from "@/components/ProjectList";
+import { ProjectType } from "@/types/project";
 import { Api } from "@/utils/Api";
 import { toast } from "sonner";
 /* ---------- GET LIST ---------- */

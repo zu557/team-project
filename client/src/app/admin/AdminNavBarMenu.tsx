@@ -12,15 +12,31 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-
-export default function NavbarMenu() {
+export default function AdminNavbarMenu() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  const handleLogout = async () => {
-    await fetch("/api/logout", { method: "POST" });
-    router.push("/login"); // redirect to login page
-  };
+ const handleLogout = async () => {
+  try {
+    const res = await fetch("http://localhost:5000/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (!res.ok) {
+      // e.g. 4xx/5xx responses
+      throw new Error(`Logout failed: ${res.status} ${res.statusText}`);
+    }
+
+    console.log("Logout successful:", res);
+    router.push("/login");
+  } catch (error) {
+    // Catches network errors or the thrown error above
+    console.error("Error during logout:", error);
+    // Optionally show a toast or alert to the user here
+  }
+};
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
@@ -35,8 +51,7 @@ export default function NavbarMenu() {
         </SheetHeader>
         <ul className="flex flex-col gap-6 px-3 w-full">
           {[
-            { href: "/add", label: "Add Content" },
-            { href: "/manage", label: "Manage Content" }            
+            { href: "/", label: "Home" },                      
           ].map((item) => (
             <li key={item.href}>
               <Link

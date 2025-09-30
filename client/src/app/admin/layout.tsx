@@ -1,4 +1,4 @@
-import AdminNavBar from "./AdminNavBar"
+import AdminNavBar from "../admin/AdminNavBar"
 import Footer from "../Footer"
 export default function AddLayout({
   children,

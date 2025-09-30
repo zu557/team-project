@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback, FC } from "react";
 import { getProjects } from "@/api/getProjects";
 import { deleteProject } from "@/api/deleteProject";
 import ProjectForm from "@/components/ProjectForm";
-import PaginationBar from "@/components/PaginationBar";
+import PaginationBar from "@/components/Admin/PaginationBar";
 import {ProjectType } from "@/types/project"
 import { useSearchParams } from 'next/navigation';
   
@@ -63,8 +63,8 @@ const ProjectCard: FC<CardProps> = ({ project, onEdit, onDelete }) => (
 const ProjectManager: FC = () => {
   const params = useSearchParams();
   const category = params.get('category') || undefined;
-  const page = params.get('page') || undefined;
-
+ 
+  const [page, setPage] = useState<number>(1);
   const [projects, setProjects] = useState<ProjectType[]>([]);
   const [editingProject, setEditingProject] = useState<ProjectType | null>(null);
   const [loading, setLoading] = useState(true);
@@ -75,7 +75,7 @@ const ProjectManager: FC = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError("");
-    const res = await getProjects({ category, page });
+    const res = await getProjects({ category, page: page.toString()  });
     if (res) {
       if (!res.data || res.data.length === 0) {
         setError("No projects found.");
@@ -166,7 +166,7 @@ const ProjectManager: FC = () => {
           ))}
         </div>
 
-        <PaginationBar currentPage={Number(page) || 1} totalPage={totalPage} />
+        <PaginationBar currentPage={Number(page) || 1} totalPage={totalPage} onChange={(p) => setPage(p)} />
       </div>
     </div>
   );

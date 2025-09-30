@@ -1,5 +1,4 @@
-"use client"
-// import type { Metadata } from "next";
+"use client";
 import { Tinos } from "next/font/google";
 import "./globals.css";
 import NavBar from "./NavBar";
@@ -10,36 +9,27 @@ import { usePathname } from "next/navigation";
 
 const tinos = Tinos({ subsets: ["latin"], weight: ["400", "700"] });
 
-// export const metadata: Metadata = {
-//   title: {
-//     default: "Debbal – Innovative Web Solutions",
-//     template: "%s | Debbal",
-//   },
-//   description:
-//     "Explore Debbal.com for cutting-edge web development, creative projects, and modern digital experiences.",
-//   icons: {
-//     icon: "/logo.png",
-//   },
-// };
-
-
-
-
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isAuthPage = pathname === "/login"; // add others if needed
+
+  // pages that shouldn't show the public NavBar/Footer
+  const isAuthPage = pathname === "/login";
+  const isAdminPage = pathname.startsWith("/admin");
+
+  const hideGlobalLayout = isAuthPage || isAdminPage;
 
   return (
     <html lang="en">
       <body className={tinos.className}>
         <Provider>
-          {!isAuthPage && <NavBar />}
+          {/* Show NavBar/Footer only on public pages */}
+          {!hideGlobalLayout && <NavBar />}
           {children}
-          {!isAuthPage && <Footer />}
+          {!hideGlobalLayout && <Footer />}
           <Toaster richColors />
         </Provider>
       </body>

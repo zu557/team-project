@@ -23,7 +23,13 @@ import bodyParser from 'body-parser';
 app.use(cookieParser())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    methods: ["GET", "POST","PATCH","DELETE"],
+    credentials: true,
+  })
+);
 
 // app.use(express.json()); 
 // app.use(express.urlencoded({ extended: true }));
@@ -38,7 +44,7 @@ app.use(compression());
 //     credentials: true,
 //   })
 // );
-app.use(cors());// this is for development , other wise other origin connot get the sever
+// app.use(cors());// this is for development , other wise other origin connot get the sever
 app.use(morgan("dev")); // Log HTTP requests to the console
 
 // Root route to check if the server is running
@@ -64,7 +70,7 @@ app.use(globalError);
 const server = app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
-
+ 
 // Handle Unhandled Promise Rejections (e.g., DB connection failures not caught)
 process.on('unhandledRejection', (err: Error) => {
   console.log('UNHANDLED REJECTION! Shutting down...');
