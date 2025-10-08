@@ -8,7 +8,7 @@ import PaginationBar from "@/components/Admin/PaginationBar";
 import {ProjectType } from "@/types/project"
 import { useSearchParams } from 'next/navigation';
 import {toast} from "sonner"
-  
+import ConfirmModal from "@/components/ConfirmModal"; // 👈 Import the modal
 
 interface CardProps {
   project: ProjectType;
@@ -72,6 +72,9 @@ const ProjectManager: FC = () => {
   const [error, setError] = useState("");
   const [totalPage, setTotalPage] = useState<number>(1);
   const [isRefreshing, setIsRefreshing] = useState(false);
+    // New state for modal
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -98,34 +101,48 @@ const ProjectManager: FC = () => {
     setEditingProject(null);
     await fetchData();
   };
-
-  const handleDelete = async (id: string) => {
+    // Show confirmation modal first
+  const handleDeleteRequest = (id: string) => {
+    setSelectedProjectId(id);
+    setConfirmOpen(true);
+  };
+  const confirmDelete = async () => {
+    if (!selectedProjectId) return;
     setIsRefreshing(true);
-    const res = await deleteProject(id);
+    const res = await deleteProject(selectedProjectId);
     if (res) {
-      toast.success("Project deleted successfully")
+      toast.success("Prject successfully deleted");
       await fetchData();
-    }else {
-      toast.error("Failed to delete the Project")
+    } else {
+      toast.error("Delete request failed.");
     }
     setIsRefreshing(false);
+    setConfirmOpen(false);
+    setSelectedProjectId(null);
   };
 
-  if (loading || isRefreshing) return <div className="flex justify-center items-center h-full p-4 bg-gray-50">
-  <svg className="w-12 h-12 text-indigo-600 animate-spin" viewBox="0 0 24 24">
-      <circle 
-          cx="12" 
-          cy="12" 
-          r="10" 
-          stroke="currentColor" 
-          strokeWidth="3" 
-          fill="none" 
-          strokeDasharray="31.415, 31.415" 
+
+
+  if (loading || isRefreshing)  return (
+    <div className="flex justify-center items-center h-full p-4 bg-gray-50">
+      <svg
+        className="w-12 h-12 text-indigo-600 animate-spin"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="3"
+          fill="none"
+          strokeDasharray="31.415, 31.415"
           strokeDashoffset="-15.707"
           strokeLinecap="round"
-      />
-  </svg>
-</div>;
+        />
+      </svg>
+    </div>
+  );
   if (error) return <p className="p-6 text-red-500">{error}</p>;
 
   return (
@@ -167,6 +184,7 @@ const ProjectManager: FC = () => {
                 project={editingProject}
                 onSave={handleSave}
                 onCancel={() => setEditingProject(null)}
+                
               />
             </div>
           </div>
@@ -179,12 +197,21 @@ const ProjectManager: FC = () => {
               key={p._id}
               project={p}
               onEdit={setEditingProject}
-              onDelete={handleDelete}
+              onDelete={handleDeleteRequest} 
             />
           ))}
         </div>
 
         <PaginationBar currentPage={Number(page) || 1} totalPage={totalPage} onChange={(p) => setPage(p)} />
+          
+      {/* Confirmation modal */}
+      <ConfirmModal
+        isOpen={confirmOpen}
+        title="Delete Project?"
+        message="Are you sure you want to delete this project? This action cannot be undone."
+        onConfirm={confirmDelete}
+        onCancel={() => setConfirmOpen(false)}
+      />
       </div>
     </div>
   );
