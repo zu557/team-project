@@ -10,11 +10,11 @@ import { Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 export default function AdminNavbarMenu() {
   const [open, setOpen] = useState(false);
-  const router = useRouter();
+  // const router = useRouter();
 
  const handleLogout = async () => {
   try {
@@ -29,7 +29,8 @@ export default function AdminNavbarMenu() {
     }
 
     console.log("Logout successful:", res);
-    router.push("/login");
+      // ...then redirects, replacing the history entry.
+    window.location.replace('/login'); 
   } catch (error) {
     // Catches network errors or the thrown error above
     console.error("Error during logout:", error);
@@ -66,7 +67,7 @@ export default function AdminNavbarMenu() {
            <li>
               <button
                 onClick={handleLogout}
-                className="px-3 py-3 w-full block hover:bg-border/50 transition-colors"
+                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition duration-300"
               >
                 Logout
               </button>

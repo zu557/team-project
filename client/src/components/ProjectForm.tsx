@@ -5,11 +5,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ProjectType } from "@/types/project";
 import { createProject } from "@/api/createProject";
-import { updateProject } from "@/api/updateProject";
+import { updateProject ,ProjectResult} from "@/api/updateProject";
+import {toast} from "sonner"
 
 interface ProjectFormProps {
   project: ProjectType | null;
-  onSave: (saved: ProjectType) => void;
+  onSave: (saved: ProjectResult) => void;
   onCancel: () => void;
 }
 
@@ -98,9 +99,11 @@ const handleSubmit = async (e: FormEvent) => {
       : await createProject(data);
 
     if (saved) {
+      toast.success("Project saved successfully")
       setMessage("Project saved successfully!");
       onSave(saved);
     } else {
+      toast.error("Failed to save project")
       setMessage("Failed to save project.");
     }
   } catch (err) {

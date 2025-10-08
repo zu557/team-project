@@ -5,11 +5,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { BlogType } from "@/types/blog";               // ✅ shared type
 import { createBlog } from "@/api/createBlog";
-import { updateBlog } from "@/api/updateBlog";
+import { updateBlog,BlogResult } from "@/api/updateBlog";
+import {toast} from "sonner"
 
 interface BlogFormProps {
   blog: BlogType | null;
-  onSave: (saved: BlogType) => void;   // parent refreshes on save
+  onSave: (saved: BlogResult) => void;   // parent refreshes on save
   onCancel: () => void;
 }
 
@@ -87,9 +88,11 @@ const BlogForm: FC<BlogFormProps> = ({ blog, onSave, onCancel }) => {
         : await createBlog(multipartData );
 
       if (saved) {
+        toast.success("Blog post saved successfully!")
         setMessage("Blog post saved successfully!");
         onSave(saved);
       } else {
+        toast.error("Failed to save. Please try agian.")
         setMessage("Failed to save blog post. Please try again.");
       }
     } catch (err) {

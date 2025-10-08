@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: 'http://localhost:3000',
-    methods: ["GET", "POST","PATCH","DELETE"],
+    // methods: ["GET", "POST","PATCH","DELETE"],
     credentials: true,
   })
 );
@@ -34,7 +34,7 @@ app.use(
 // app.use(express.json()); 
 // app.use(express.urlencoded({ extended: true }));
 // Apply security and performance middleware
-app.use(compression());
+app.use(compression()); 
 // app.use(helmet());
 // app.use(
 //   cors({

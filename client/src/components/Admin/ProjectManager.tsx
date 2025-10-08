@@ -7,6 +7,7 @@ import ProjectForm from "@/components/ProjectForm";
 import PaginationBar from "@/components/Admin/PaginationBar";
 import {ProjectType } from "@/types/project"
 import { useSearchParams } from 'next/navigation';
+import {toast} from "sonner"
   
 
 interface CardProps {
@@ -100,14 +101,31 @@ const ProjectManager: FC = () => {
 
   const handleDelete = async (id: string) => {
     setIsRefreshing(true);
-    const success = await deleteProject(id);
-    if (success) {
+    const res = await deleteProject(id);
+    if (res) {
+      toast.success("Project deleted successfully")
       await fetchData();
+    }else {
+      toast.error("Failed to delete the Project")
     }
     setIsRefreshing(false);
   };
 
-  if (loading || isRefreshing) return <p className="p-6">Loading projects...</p>;
+  if (loading || isRefreshing) return <div className="flex justify-center items-center h-full p-4 bg-gray-50">
+  <svg className="w-12 h-12 text-indigo-600 animate-spin" viewBox="0 0 24 24">
+      <circle 
+          cx="12" 
+          cy="12" 
+          r="10" 
+          stroke="currentColor" 
+          strokeWidth="3" 
+          fill="none" 
+          strokeDasharray="31.415, 31.415" 
+          strokeDashoffset="-15.707"
+          strokeLinecap="round"
+      />
+  </svg>
+</div>;
   if (error) return <p className="p-6 text-red-500">{error}</p>;
 
   return (
@@ -127,7 +145,7 @@ const ProjectManager: FC = () => {
                 deploymentLink: "",
               })
             }
-            className="px-6 py-3 bg-green-600 text-white rounded-md"
+            className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-300"
           >
             Add New Project
           </button>

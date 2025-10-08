@@ -13,7 +13,7 @@ export default async function ProjectList({
   page: string;
 }) {
   const response = await getProjects({ category, page });
- console.log('frontEnd Response :',response)
+
   if (!response || !response.data || response.data.length === 0) {
     return (
       <div className="w-full flex flex-col items-center justify-center py-20">

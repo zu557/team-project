@@ -26,6 +26,7 @@ interface AuthResponse {
       // Note: `process.env.NEXT_PUBLIC_API_URL` will need to be configured for this to work.
       const res = await fetch(`http://localhost:5000/api/auth/login`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
@@ -35,10 +36,17 @@ interface AuthResponse {
       }
       
       const data: AuthResponse = await res.json();
-      document.cookie = `token=${data.token}; path=/; secure; samesite=lax`;
+      
+      // Set cookie with proper attributes for middleware access
+      const isSecure = window.location.protocol === 'https:';
+      document.cookie = `token=${data.token}; path=/; max-age=86400; samesite=lax${isSecure ? '; secure' : ''}`;
+      
       setSuccessMessage("Login successful!");
-           
-      router.push("/admin");
+      
+      // Small delay to ensure cookie is set before navigation
+      setTimeout(() => {
+        router.push("/admin");
+      }, 100);
     } catch (err) {
       const errorMessage = (err as Error).message;
       setError(errorMessage);

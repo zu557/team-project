@@ -1,17 +1,27 @@
+"use server"
 import axios, { AxiosError } from "axios";
-import { toast } from "sonner";
 import { Api } from "@/utils/Api"; // your base URL
-import {ProjectType} from "@/types/project"
+import {cookies} from "next/headers"
 
 /* ---------- DELETE ---------- */
-export async function deleteProject(id: string): Promise<boolean> {
+export async function deleteProject(id: string) {
   try {
-    await axios.delete(`${Api}/projects/${id}`);
-    toast.success("Project deleted");
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+    if (!token) {
+      console.log("No token found in cookies");
+      return {
+        success: false,
+        message: "Authentication failed. Please log in.",
+        data: null,
+      };
+    }
+
+    const res = await axios.delete(`${Api}/projects/${id}`);
     return true;
   } catch (err) {
     const e = err as AxiosError<{ message?: string }>;
-    toast.error(e.response?.data?.message || "Failed to delete project");
+    console.log("failed to deleted Project",e.response?.data?.message)
     return false;
   }
 }

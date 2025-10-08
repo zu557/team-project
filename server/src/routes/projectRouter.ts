@@ -7,8 +7,8 @@ const router = express.Router();
 // Public Routes
 router.get('/', getProjects); 
 router.get('/:id', getProjectById);
-
-// Admin Routes 
+ 
+// Admin Routes
 router.post('/', upload.single("image"), addProject);
 router.patch('/:id', upload.single('image'), updateProject);
 router.delete('/:id', deleteProject);

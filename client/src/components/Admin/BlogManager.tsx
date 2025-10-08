@@ -7,6 +7,7 @@ import PaginationBar from "@/components/Admin/PaginationBar";
 import BlogForm from "@/components/BlogForm";
 import { BlogType } from "@/types/blog";   
 import { useSearchParams } from 'next/navigation';
+import {toast} from "sonner"
 
 
 interface BlogCardProps {
@@ -89,12 +90,31 @@ const BlogManager: FC = () => {
 
   const handleDelete = async (id: string) => {
     setIsRefreshing(true);
-    const success = await deleteBlog(id);
-    if (success) await fetchData();
+    const res = await deleteBlog(id);
+    if (res) {
+      toast.success("Blog successfully deleted")
+      await fetchData();
+    }else {
+      toast.error("Delete request failed.")
+    }
     setIsRefreshing(false);
   };
 
-  if (loading || isRefreshing) return <p className="p-6">Loading blogs...</p>;
+  if (loading || isRefreshing) return <div className="flex justify-center items-center h-full p-4  bg-gray-50">
+  <svg className="w-12 h-12 text-indigo-600 animate-spin" viewBox="0 0 24 24">
+      <circle 
+          cx="12" 
+          cy="12" 
+          r="10" 
+          stroke="currentColor" 
+          strokeWidth="3" 
+          fill="none" 
+          strokeDasharray="31.415, 31.415" 
+          strokeDashoffset="-15.707"
+          strokeLinecap="round"
+      />
+  </svg>
+</div>;
   if (error) return <p className="p-6 text-red-500">{error}</p>;
 
   return (
@@ -113,7 +133,7 @@ const BlogManager: FC = () => {
                 categories: "",
               })
             }
-            className="px-6 py-3 bg-green-600 text-white rounded-md"
+            className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-300"
           >
             Add New Blog
           </button>
